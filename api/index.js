@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "saqibsarwar@cc.cc";
-const ADMIN_HASH = process.env.ADMIN_HASH || "$2a$10$wHly9QZ3GgI7aD4c7J2GRe9Z0W1O0.b9f8L1M3j2K4h5G6j7k8l9m";
+const ADMIN_HASH = process.env.ADMIN_HASH || "$2a$10$w7DIFMv06fhSC2ZXYv3Zse0ccEkzm9tJJrg.Rc5MKlYnutTclbVDC"; // Biscoe@@3
 const JWT_SECRET = process.env.JWT_SECRET || "sakuda-secret-token-fallback";
 const UPSTREAM_API = "https://apifb-ten.vercel.app";
 
