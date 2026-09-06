@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sakuda API — Admin</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #0a0a0f; --panel: #12121c; --panel2: #1a1a2a;
+    --accent: #8b5cf6; --accent2: #ec4899; --ok: #22c55e; --err: #ef4444;
+    --txt: #e5e7eb; --muted: #9ca3af; --border: rgba(255,255,255,.08);
+  }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: radial-gradient(1200px 600px at 20% 0%, rgba(139,92,246,.15), transparent 60%),
+                radial-gradient(1000px 500px at 80% 100%, rgba(236,72,153,.12), transparent 60%),
+                var(--bg);
+    color: var(--txt); min-height: 100vh;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 32px 20px; }
+  .brand { display:flex; align-items:center; gap:12px; margin-bottom: 28px; }
+  .logo { width:40px; height:40px; border-radius:12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; }
+  h1 { font-size: 22px; }
+  h1 span { background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+  label { display:block; font-size:12px; color:var(--muted); margin: 12px 0 6px; text-transform: uppercase; letter-spacing: .5px; }
+  input, textarea {
+    width:100%; background: var(--panel2); border:1px solid var(--border); border-radius:10px;
+    padding: 12px 14px; color: var(--txt); font-size: 14px; outline: none;
+  }
+  input:focus, textarea:focus { border-color: var(--accent); }
+  textarea { min-height: 90px; resize: vertical; font-family: inherit; }
+  button {
+    background: linear-gradient(90deg, var(--accent), var(--accent2)); color:#fff; border:0;
+    padding: 12px 22px; border-radius: 10px; font-weight: 600; cursor:pointer; font-size: 14px;
+  }
+  button:hover { filter: brightness(1.1); }
+  button.ghost { background: transparent; border:1px solid var(--border); }
+  button.danger { background: var(--err); }
+  .msg { margin-top:12px; font-size:14px; min-height: 20px; }
+  .msg.err { color: var(--err); } .msg.ok { color: var(--ok); }
+  table { width:100%; border-collapse: collapse; margin-top: 8px; }
+  th, td { text-align:left; padding: 10px 8px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  th { color: var(--muted); font-weight:600; }
+  .keychip { background: var(--panel2); padding: 4px 10px; border-radius: 8px; font-family: monospace; color: var(--accent); }
+  .pill { padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+  .pill.on { background: rgba(34,197,94,.15); color: var(--ok); }
+  .pill.off { background: rgba(239,68,68,.15); color: var(--err); }
+  .row { display:flex; gap:10px; align-items:center; flex-wrap: wrap; }
+  .usage { background: var(--panel2); border-radius: 10px; padding: 12px 14px; font-family: monospace; font-size: 12px; margin-top: 10px; word-break: break-all; color: var(--muted); }
+  .stats { display:flex; gap:14px; margin-bottom: 20px; flex-wrap: wrap; }
+  .stat { background: var(--panel); border:1px solid var(--border); border-radius: 14px; padding: 16px 22px; flex:1; min-width: 140px; }
+  .stat b { font-size: 24px; display:block; }
+  .stat span { color: var(--muted); font-size: 12px; }
+  #app { display: none; }
+  .topbar { display:flex; justify-content: space-between; align-items:center; }
+  .hidden { display:none !important; }
+  .doc-cell { max-width: 260px; color: var(--muted); font-size: 12px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <div class="logo">S</div>
+    <h1>Sakuda <span>API Admin</span></h1>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="card" id="loginCard">
+    <h2 style="margin-bottom:8px">Sign in</h2>
+    <p style="color:var(--muted); font-size:14px; margin-bottom:8px">Admin access required to manage API keys.</p>
+    <label>Email</label>
+    <input id="email" type="email" autocomplete="username" placeholder="admin email" />
+    <label>Password</label>
+    <input id="password" type="password" autocomplete="current-password" placeholder="password" />
+    <div class="msg" id="loginMsg"></div>
+    <div style="margin-top:14px"><button onclick="login()">Sign in</button></div>
+  </div>
+
+  <!-- APP -->
+  <div id="app">
+    <div class="stats">
+      <div class="stat"><b id="statKeys">0</b><span>API keys</span></div>
+      <div class="stat"><b id="statReqs">0</b><span>Total proxied requests</span></div>
+      <div class="stat"><b id="statActive">0</b><span>Active keys</span></div>
+    </div>
+
+    <div class="card">
+      <div class="topbar"><h2>Create API key</h2><button class="ghost" onclick="logout()">Log out</button></div>
+      <label>Key name (this becomes ?key=...)</label>
+      <input id="newKey" placeholder="e.g. friend-rahul" />
+      <label>Label</label>
+      <input id="newLabel" placeholder="Who this key is for" />
+      <label>Documentation for this user (they'll see setup notes)</label>
+      <textarea id="newDoc" placeholder="e.g. Use db_code 101. Devices endpoint: /api/101/devices?key=YourKey. Refresh every 5s. Contact me if rate-limited."></textarea>
+      <div class="msg" id="createMsg"></div>
+      <div style="margin-top:14px"><button onclick="createKey()">Create key</button></div>
+      <div class="usage hidden" id="usageOut"></div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-bottom:10px">Keys</h2>
+      <div id="keysList">Loading…</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = location.origin;
+let token = sessionStorage.getItem("sakuda_admin_token") || "";
+
+function $(id){ return document.getElementById(id); }
+
+async function login(){
+  $("loginMsg").className = "msg"; $("loginMsg").textContent = "";
+  const res = await fetch(API + "/api/login", {
+    method: "POST", headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ email: $("email").value.trim(), password: $("password").value })
+  });
+  const data = await res.json().catch(()=>({}));
+  if (res.ok && data.token) {
+    token = data.token;
+    sessionStorage.setItem("sakuda_admin_token", token);
+    showApp();
+  } else {
+    $("loginMsg").className = "msg err";
+    $("loginMsg").textContent = data.error || "Login failed";
+  }
+}
+
+function logout(){
+  token = ""; sessionStorage.removeItem("sakuda_admin_token"); location.reload();
+}
+
+function showApp(){
+  $("loginCard").style.display = "none";
+  $("app").style.display = "block";
+  loadKeys();
+}
+
+async function loadKeys(){
+  const res = await fetch(API + "/api/keys", { headers: { Authorization: "Bearer " + token } });
+  if (res.status === 401) { logout(); return; }
+  const data = await res.json();
+  $("statKeys").textContent = data.total;
+  $("statReqs").textContent = (data.stats && data.stats.totalRequests) || 0;
+  const active = data.keys.filter(k => k.active).length;
+  $("statActive").textContent = active;
+
+  if (!data.keys.length) { $("keysList").textContent = "No keys yet."; return; }
+  let html = "<table><tr><th>Key</th><th>Label</th><th>Docs</th><th>Uses</th><th>Status</th><th></th></tr>";
+  for (const k of data.keys) {
+    html += `<tr>
+      <td><span class="keychip">${esc(k.key)}</span></td>
+      <td>${esc(k.label || "")}</td>
+      <td class="doc-cell">${esc(k.documentation || "")}</td>
+      <td>${k.uses || 0}</td>
+      <td><span class="pill ${k.active ? "on":"off"}">${k.active ? "active":"disabled"}</span></td>
+      <td class="row">
+        <button class="ghost" onclick="toggleKey('${esc(k.key)}')">${k.active ? "Disable":"Enable"}</button>
+        ${k.key === "sakuda" ? "" : `<button class="danger" onclick="delKey('${esc(k.key)}')">Delete</button>`}
+      </td>
+    </tr>`;
+  }
+  html += "</table>";
+  $("keysList").innerHTML = html;
+}
+
+async function createKey(){
+  const cm = $("createMsg"); cm.className = "msg"; cm.textContent = "";
+  const res = await fetch(API + "/api/keys", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+    body: JSON.stringify({ key: $("newKey").value.trim(), label: $("newLabel").value.trim(), documentation: $("newDoc").value.trim() })
+  });
+  const data = await res.json().catch(()=>({}));
+  if (res.ok) {
+    cm.className = "msg ok"; cm.textContent = "Key created.";
+    $("usageOut").className = "usage";
+    $("usageOut").textContent = "Share with this user:\nDevices: " + data.usage.devices + "\nMessages: " + data.usage.messages + "\n\n" + (data.note || "");
+    $("newKey").value = ""; $("newLabel").value = ""; $("newDoc").value = "";
+    loadKeys();
+  } else {
+    cm.className = "msg err"; cm.textContent = data.error || "Failed";
+  }
+}
+
+async function delKey(key){
+  if (!confirm("Delete key '" + key + "'? Users with this key lose access.")) return;
+  await fetch(API + "/api/keys/" + encodeURIComponent(key), { method: "DELETE", headers: { Authorization: "Bearer " + token } });
+  loadKeys();
+}
+
+async function toggleKey(key){
+  await fetch(API + "/api/keys/" + encodeURIComponent(key) + "/toggle", { method: "POST", headers: { Authorization: "Bearer " + token } });
+  loadKeys();
+}
+
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+if (token) showApp();
+</script>
+</body>
+</html>

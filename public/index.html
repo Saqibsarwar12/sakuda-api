@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sakuda API — Temp Number & OTP Monitoring</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: "Segoe UI", system-ui, sans-serif; background:#0a0a0f; color:#e5e7eb;
+    background-image:
+      radial-gradient(1000px 500px at 10% 0%, rgba(139,92,246,.18), transparent 60%),
+      radial-gradient(900px 500px at 90% 90%, rgba(236,72,153,.14), transparent 60%);
+    min-height:100vh;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 48px 22px; }
+  .logo { width:56px; height:56px; border-radius:16px; background:linear-gradient(135deg,#8b5cf6,#ec4899);
+    display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:800; color:#fff; margin-bottom:20px; }
+  h1 { font-size: 34px; margin-bottom: 8px; }
+  h1 span { background:linear-gradient(90deg,#8b5cf6,#ec4899); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  p.sub { color:#9ca3af; margin-bottom: 28px; font-size: 16px; }
+  .card { background:#12121c; border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:22px; margin-bottom:18px; }
+  .card h2 { font-size:17px; margin-bottom:10px; }
+  code, .mono { font-family: ui-monospace, "Cascadia Code", monospace; }
+  pre { background:#1a1a2a; border-radius:10px; padding:14px; overflow-x:auto; font-size:13px; margin-top:10px; color:#c4b5fd; }
+  a.btn { display:inline-block; background:linear-gradient(90deg,#8b5cf6,#ec4899); color:#fff; text-decoration:none;
+    padding: 12px 24px; border-radius:10px; font-weight:600; margin-right: 10px; margin-top: 8px; }
+  a.ghost { background:transparent; border:1px solid rgba(255,255,255,.15); }
+  .badge { display:inline-block; background:rgba(34,197,94,.15); color:#22c55e; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:600; }
+  table { width:100%; border-collapse:collapse; margin-top:6px; font-size:14px; }
+  td, th { text-align:left; padding:8px 6px; border-bottom:1px solid rgba(255,255,255,.07); }
+  th { color:#9ca3af; font-size:12px; text-transform:uppercase; letter-spacing:.4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">S</div>
+  <h1>Sakuda <span>API</span> <span class="badge">online</span></h1>
+  <p class="sub">Temp number device &amp; OTP/SMS monitoring. Key-gated proxy with admin key management.</p>
+
+  <div class="card">
+    <h2>Quick start</h2>
+    <table>
+      <tr><th>Endpoint</th><th>Description</th></tr>
+      <tr><td class="mono">GET /api/{db}/devices?key=KEY</td><td>Online devices for a database code (e.g. 101)</td></tr>
+      <tr><td class="mono">GET /api/{db}/messages/{client_id}?key=KEY&amp;limit=5</td><td>Latest SMS/OTP for a device</td></tr>
+      <tr><td class="mono">GET /api/health</td><td>Service status (no key needed)</td></tr>
+    </table>
+    <pre>curl "https://YOUR-API.vercel.app/api/101/devices?key=sakuda"</pre>
+  </div>
+
+  <div class="card">
+    <h2>Admin</h2>
+    <p style="color:#9ca3af; font-size:14px; margin-bottom:6px">Create &amp; manage keys, add per-user documentation, view usage.</p>
+    <a class="btn" href="/admin">Open admin dashboard</a>
+    <a class="btn ghost" href="/api/health">Health check (JSON)</a>
+  </div>
+</div>
+</body>
+</html>
