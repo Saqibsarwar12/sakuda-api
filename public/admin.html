@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Sakuda API — Admin</title>
+<title>Sakuda API — Pro Admin & Key Monetization</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -18,30 +18,31 @@
                 var(--bg);
     color: var(--txt); min-height: 100vh;
   }
-  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px; }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 32px 20px; }
   .brand { display:flex; align-items:center; justify-content: space-between; margin-bottom: 28px; }
   .brand-left { display:flex; align-items:center; gap:12px; }
-  .logo { width:40px; height:40px; border-radius:12px;
+  .logo { width:42px; height:42px; border-radius:12px;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
-    display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; }
+    display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; font-size:18px; }
   h1 { font-size: 22px; }
   h1 span { background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
   label { display:block; font-size:12px; color:var(--muted); margin: 12px 0 6px; text-transform: uppercase; letter-spacing: .5px; }
-  input, textarea {
+  input, textarea, select {
     width:100%; background: var(--panel2); border:1px solid var(--border); border-radius:10px;
-    padding: 12px 14px; color: var(--txt); font-size: 14px; outline: none;
+    padding: 11px 14px; color: var(--txt); font-size: 14px; outline: none;
   }
-  input:focus, textarea:focus { border-color: var(--accent); }
-  textarea { min-height: 90px; resize: vertical; font-family: inherit; }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+  textarea { min-height: 80px; resize: vertical; font-family: inherit; }
   button {
     background: linear-gradient(90deg, var(--accent), var(--accent2)); color:#fff; border:0;
     padding: 10px 18px; border-radius: 10px; font-weight: 600; cursor:pointer; font-size: 13px;
-    display: inline-flex; align-items: center; gap: 6px;
+    display: inline-flex; align-items: center; gap: 6px; transition: 0.15s;
   }
-  button:hover { filter: brightness(1.1); }
+  button:hover { filter: brightness(1.1); transform: translateY(-1px); }
   button.ghost { background: transparent; border:1px solid var(--border); color: var(--txt); }
   button.danger { background: var(--err); }
+  button.sm { padding: 5px 10px; font-size: 11px; border-radius: 6px; }
   .msg { margin-top:12px; font-size:14px; min-height: 20px; }
   .msg.err { color: var(--err); } .msg.ok { color: var(--ok); }
   table { width:100%; border-collapse: collapse; margin-top: 8px; }
@@ -52,17 +53,25 @@
   .pill.on { background: rgba(34,197,94,.15); color: var(--ok); border: 1px solid rgba(34,197,94,.3); }
   .pill.off { background: rgba(239,68,68,.15); color: var(--err); border: 1px solid rgba(239,68,68,.3); }
   .row { display:flex; gap:8px; align-items:center; flex-wrap: wrap; }
-  .usage { background: var(--panel2); border-radius: 10px; padding: 12px 14px; font-family: monospace; font-size: 12px; margin-top: 10px; word-break: break-all; color: var(--muted); border: 1px dashed var(--border); }
+  .usage { background: var(--panel2); border-radius: 10px; padding: 14px 16px; font-family: monospace; font-size: 12px; margin-top: 14px; word-break: break-all; color: var(--muted); border: 1px dashed var(--border); line-height: 1.6; }
   .stats { display:flex; gap:14px; margin-bottom: 20px; flex-wrap: wrap; }
-  .stat { background: var(--panel); border:1px solid var(--border); border-radius: 14px; padding: 16px 22px; flex:1; min-width: 140px; }
+  .stat { background: var(--panel); border:1px solid var(--border); border-radius: 14px; padding: 16px 20px; flex:1; min-width: 140px; }
   .stat b { font-size: 24px; display:block; }
   .stat span { color: var(--muted); font-size: 12px; }
   #app { display: none; }
   .topbar { display:flex; justify-content: space-between; align-items:center; }
   .hidden { display:none !important; }
-  .doc-cell { max-width: 240px; color: var(--muted); font-size: 12px; white-space: pre-wrap; line-height: 1.4; }
-  .badge-kv { background: rgba(139,92,246,0.15); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.3); padding: 3px 8px; border-radius: 6px; font-size: 11px; }
+  .doc-cell { max-width: 200px; color: var(--muted); font-size: 12px; white-space: pre-wrap; line-height: 1.4; }
+  .badge-kv { background: rgba(139,92,246,0.15); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.3); padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; }
   .uses-badge { background: rgba(56,189,248,0.15); color: #38bdf8; font-weight: 700; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-family: monospace; }
+  .feature-box { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-top: 14px; }
+  .feature-tag { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-right: 4px; margin-bottom: 4px; }
+  .tag-credits { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+  .tag-ratelimit { background: rgba(234,179,8,0.15); color: #facc15; border: 1px solid rgba(234,179,8,0.3); }
+  .tag-perotp { background: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
+  .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .checkbox-label { display: flex; align-items: center; gap: 8px; cursor: pointer; text-transform: none; color: var(--txt); font-size: 13px; margin: 0; }
+  .checkbox-label input { width: auto; }
 </style>
 </head>
 <body>
@@ -71,8 +80,8 @@
     <div class="brand-left">
       <div class="logo">S</div>
       <div>
-        <h1>Sakuda <span>API Admin</span></h1>
-        <div style="font-size:11px; color:var(--muted); margin-top:2px;">Permanent Cloudflare KV Storage Mode</div>
+        <h1>Sakuda <span>Pro API &amp; Monetization Admin</span></h1>
+        <div style="font-size:11px; color:var(--muted); margin-top:2px;">Cloudflare KV Permanent Sync · Per-Key Monetization &amp; Rate Limiting</div>
       </div>
     </div>
     <div id="storageBadge" class="badge-kv hidden">☁ Cloudflare KV Synced</div>
@@ -81,7 +90,7 @@
   <!-- LOGIN -->
   <div class="card" id="loginCard">
     <h2 style="margin-bottom:8px">Sign in</h2>
-    <p style="color:var(--muted); font-size:14px; margin-bottom:8px">Admin access required to manage API keys.</p>
+    <p style="color:var(--muted); font-size:14px; margin-bottom:8px">Admin access required to configure API monetization and keys.</p>
     <label>Email</label>
     <input id="email" type="email" autocomplete="username" placeholder="admin email" />
     <label>Password</label>
@@ -95,35 +104,93 @@
     <div class="stats">
       <div class="stat"><b id="statKeys">0</b><span>Total API keys</span></div>
       <div class="stat"><b id="statReqs">0</b><span>Total proxied requests</span></div>
+      <div class="stat"><b id="statOtps">0</b><span>Total OTPs Delivered</span></div>
       <div class="stat"><b id="statActive">0</b><span>Active keys</span></div>
       <div class="stat"><b style="color:#a78bfa" id="statStorage">Cloudflare KV</b><span>Storage backend</span></div>
     </div>
 
+    <!-- CREATE KEY -->
     <div class="card">
       <div class="topbar">
-        <h2>Create permanent API key</h2>
+        <h2>Create API Key with Pro Features</h2>
         <div class="row">
           <button class="ghost" onclick="loadKeys()">⟳ Refresh</button>
           <button class="ghost" onclick="logout()">Log out</button>
         </div>
       </div>
-      <p style="color:var(--muted); font-size:13px; margin: 4px 0 12px;">Keys created here are saved directly to Cloudflare KV and persist forever across cold starts and deployments.</p>
+      <p style="color:var(--muted); font-size:13px; margin: 4px 0 14px;">Keys created here are saved to Cloudflare KV and persist forever across cold starts and deployments. Features can be added optionally.</p>
 
-      <label>Key name (used in ?key=...)</label>
-      <input id="newKey" placeholder="e.g. client-alpha or sakuda-vip" />
-      <label>Label / Owner</label>
-      <input id="newLabel" placeholder="e.g. John Doe / Customer 101" />
-      <label>Documentation / Notes</label>
-      <textarea id="newDoc" placeholder="Setup notes, DB code, endpoints, or instructions for this user..."></textarea>
+      <div class="row" style="gap:14px;">
+        <div style="flex:1; min-width: 220px;">
+          <label>Key name (used in ?key=...)</label>
+          <input id="newKey" placeholder="e.g. client-alpha or sakuda-vip" />
+        </div>
+        <div style="flex:1; min-width: 220px;">
+          <label>Label / Client Name</label>
+          <input id="newLabel" placeholder="e.g. Premium Client / John" />
+        </div>
+      </div>
+
+      <label>Documentation / Notes / Allowed DBs</label>
+      <textarea id="newDoc" placeholder="Setup notes, client contact, or instructions..."></textarea>
+
+      <!-- Optional Features Box -->
+      <div class="feature-box">
+        <h4 style="font-size:13px; color:#c4b5fd; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+          <span>⚙ Optional Pro Monetization &amp; Control Features</span>
+          <span style="font-size:11px; color:var(--muted); font-weight:normal;">(uncheck to leave unrestricted)</span>
+        </h4>
+
+        <div class="feature-grid">
+          <!-- Rate limiting -->
+          <div style="background:var(--panel2); padding:12px; border-radius:10px; border:1px solid var(--border);">
+            <label class="checkbox-label">
+              <input type="checkbox" id="featRateLimit">
+              <b>Enable Rate Limiting</b>
+            </label>
+            <div style="margin-top:8px;">
+              <span style="font-size:11px; color:var(--muted);">Max requests per minute:</span>
+              <input id="featRateLimitPerMin" type="number" value="60" style="margin-top:4px;" />
+            </div>
+          </div>
+
+          <!-- Credits & Pay-Per-OTP -->
+          <div style="background:var(--panel2); padding:12px; border-radius:10px; border:1px solid var(--border);">
+            <label class="checkbox-label">
+              <input type="checkbox" id="featCredits">
+              <b>Enable Credit Balance</b>
+            </label>
+            <div style="margin-top:8px;">
+              <span style="font-size:11px; color:var(--muted);">Initial Credits (e.g. 100):</span>
+              <input id="featCreditsAmount" type="number" placeholder="100" style="margin-top:4px;" />
+            </div>
+            <div style="margin-top:10px;">
+              <label class="checkbox-label" style="font-size:12px; color:#a78bfa;">
+                <input type="checkbox" id="featChargeNewOtp">
+                <span>Charge credit <b>ONLY when new OTP code is received</b></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Database Restrictions -->
+          <div style="background:var(--panel2); padding:12px; border-radius:10px; border:1px solid var(--border);">
+            <label style="margin:0 0 4px; text-transform:none; font-weight:bold; color:var(--txt);">Allowed DB Codes</label>
+            <span style="font-size:11px; color:var(--muted);">Comma-separated (leave empty for all DBs):</span>
+            <input id="featAllowedDbs" placeholder="e.g. 101, 102" style="margin-top:4px;" />
+          </div>
+        </div>
+      </div>
+
       <div class="msg" id="createMsg"></div>
-      <div style="margin-top:14px"><button onclick="createKey()">Create key (Cloudflare KV)</button></div>
+      <div style="margin-top:16px"><button onclick="createKey()">Create Permanent Key (Cloudflare KV)</button></div>
       <div class="usage hidden" id="usageOut"></div>
     </div>
 
+    <!-- KEYS TABLE -->
     <div class="card">
       <div class="topbar" style="margin-bottom:12px;">
-        <h2>API Keys List &amp; Live Usage</h2>
-        <span style="font-size:12px; color:var(--muted)">Sorted by activity</span>
+        <h2>API Keys &amp; Live Usage</h2>
+        <span style="font-size:12px; color:var(--muted)">Saved permanently in Cloudflare KV</span>
       </div>
       <div id="keysList">Loading…</div>
     </div>
@@ -170,30 +237,79 @@ async function loadKeys(){
   const data = await res.json();
   $("statKeys").textContent = data.total || 0;
   $("statReqs").textContent = (data.stats && data.stats.totalRequests) || 0;
+  $("statOtps").textContent = (data.stats && data.stats.totalOtpsDelivered) || 0;
   const active = (data.keys || []).filter(k => k.active).length;
   $("statActive").textContent = active;
 
   if (!data.keys || !data.keys.length) { $("keysList").textContent = "No keys found."; return; }
-  let html = "<table><tr><th>Key</th><th>Owner</th><th>Docs</th><th>Usage Count</th><th>Last Used</th><th>Status</th><th>Actions</th></tr>";
+  let html = "<table><tr><th>Key</th><th>Owner</th><th>Features / Limits</th><th>Requests</th><th>Last Used</th><th>Status</th><th>Actions</th></tr>";
   for (const k of data.keys) {
     const lastUsedStr = k.lastUsed ? new Date(k.lastUsed).toLocaleTimeString() + ' (' + new Date(k.lastUsed).toLocaleDateString() + ')' : 'Never';
+    const feat = k.features || {};
+
+    let featBadges = "";
+    if (feat.creditsEnabled) {
+      const rem = feat.creditsRemaining !== null ? feat.creditsRemaining : "∞";
+      featBadges += `<span class="feature-tag tag-credits">💰 ${rem} credits left</span>`;
+      if (feat.chargeOnlyOnNewOtp) {
+        featBadges += `<span class="feature-tag tag-perotp">⚡ Pay-per-OTP only</span>`;
+      }
+    }
+    if (feat.rateLimitEnabled) {
+      featBadges += `<span class="feature-tag tag-ratelimit">⏱ ${feat.rateLimitPerMin || 60} req/m</span>`;
+    }
+    if (feat.allowedDbs && feat.allowedDbs.length) {
+      featBadges += `<span class="feature-tag" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3)">DB: ${feat.allowedDbs.join(',')}</span>`;
+    }
+    if (!featBadges) {
+      featBadges = `<span style="color:var(--muted); font-size:11px;">Standard / Unlimited</span>`;
+    }
+
     html += `<tr>
       <td><span class="keychip">${esc(k.key)}</span></td>
-      <td><b>${esc(k.label || "")}</b></td>
-      <td class="doc-cell">${esc(k.documentation || "—")}</td>
+      <td>
+        <b>${esc(k.label || "")}</b>
+        <div style="font-size:11px; color:var(--muted);">${esc(k.documentation || "—")}</div>
+      </td>
+      <td>${featBadges}</td>
       <td><span class="uses-badge">${k.uses || 0} reqs</span></td>
       <td style="color:var(--muted); font-size:12px;">${lastUsedStr}</td>
       <td><span class="pill ${k.active ? "on":"off"}">${k.active ? "active":"disabled"}</span></td>
       <td>
         <div class="row">
-          <button class="ghost" onclick="toggleKey('${esc(k.key)}')">${k.active ? "Disable":"Enable"}</button>
-          ${k.key === "sakuda" ? "" : `<button class="danger" onclick="delKey('${esc(k.key)}')">Delete</button>`}
+          <button class="ghost sm" onclick="toggleKey('${esc(k.key)}')">${k.active ? "Disable":"Enable"}</button>
+          <button class="ghost sm" onclick="quickEditCredits('${esc(k.key)}', ${feat.creditsRemaining !== null ? feat.creditsRemaining : -1})">Edit Credits</button>
+          ${k.key === "sakuda" ? "" : `<button class="danger sm" onclick="delKey('${esc(k.key)}')">Delete</button>`}
         </div>
       </td>
     </tr>`;
   }
   html += "</table>";
   $("keysList").innerHTML = html;
+}
+
+async function quickEditCredits(key, currentCredits) {
+  const input = prompt(`Update credit balance for key "${key}":\n(Enter number of credits, or 'none' to disable credit limits)`, currentCredits === -1 ? "100" : currentCredits);
+  if (input === null) return;
+
+  let creditsRemaining = null;
+  let creditsEnabled = false;
+
+  if (input.trim().toLowerCase() !== "none" && !isNaN(parseInt(input))) {
+    creditsRemaining = parseInt(input);
+    creditsEnabled = true;
+  }
+
+  const res = await fetch(`${API}/api/keys/${encodeURIComponent(key)}/features`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+    body: JSON.stringify({ creditsEnabled, creditsRemaining })
+  });
+  if (res.ok) {
+    loadKeys();
+  } else {
+    alert("Failed to update credits");
+  }
 }
 
 async function createKey(){
@@ -206,17 +322,37 @@ async function createKey(){
     cm.className = "msg err"; cm.textContent = "Please enter a key name"; return;
   }
 
+  const rateLimitEnabled = $("featRateLimit").checked;
+  const rateLimitPerMin = parseInt($("featRateLimitPerMin").value) || 60;
+  const creditsEnabled = $("featCredits").checked;
+  const creditsRemaining = creditsEnabled ? (parseInt($("featCreditsAmount").value) || 100) : null;
+  const chargeOnlyOnNewOtp = $("featChargeNewOtp").checked;
+  
+  const allowedDbsRaw = $("featAllowedDbs").value.trim();
+  const allowedDbs = allowedDbsRaw ? allowedDbsRaw.split(",").map(s => s.trim()).filter(Boolean) : [];
+
   const res = await fetch(API + "/api/keys", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
-    body: JSON.stringify({ key: keyName, label, documentation: doc })
+    body: JSON.stringify({
+      key: keyName,
+      label,
+      documentation: doc,
+      rateLimitEnabled,
+      rateLimitPerMin,
+      creditsEnabled,
+      creditsRemaining,
+      chargeOnlyOnNewOtp,
+      allowedDbs
+    })
   });
   const data = await res.json().catch(()=>({}));
   if (res.ok) {
-    cm.className = "msg ok"; cm.textContent = "Key permanently saved to Cloudflare KV & Vercel!";
+    cm.className = "msg ok"; cm.textContent = "Key permanently saved to Cloudflare KV & Vercel with features!";
     $("usageOut").className = "usage";
-    $("usageOut").textContent = "Share with this user:\nDevices endpoint: " + data.usage.devices + "\nMessages endpoint: " + data.usage.messages + "\n\n" + (data.note || "");
+    $("usageOut").textContent = "Share with this client:\nDirect Console link: https://sakuda-console.vercel.app/?key=" + keyName + "\nDevices endpoint: " + data.usage.devices + "\nMessages endpoint: " + data.usage.messages + "\n\n" + (data.note || "");
     $("newKey").value = ""; $("newLabel").value = ""; $("newDoc").value = "";
+    $("featCredits").checked = false; $("featRateLimit").checked = false; $("featChargeNewOtp").checked = false;
     loadKeys();
   } else {
     cm.className = "msg err"; cm.textContent = data.error || "Failed to create key";
