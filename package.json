@@ -1,0 +1,17 @@
+{
+  "name": "sakuda-api",
+  "version": "1.0.0",
+  "description": "Sakuda Temp Number API with key authentication",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "vercel": "^37.0.0"
+  }
+}
